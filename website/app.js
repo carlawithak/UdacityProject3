@@ -7,6 +7,7 @@ const newDate = d.getMonth()+'.'+d.getDate()+'.'+d.getFullYear();
 
 
 
+
 // Event listener to add function to existing HTML DOM element
 document.getElementById('generate').addEventListener('click', generateResults);
 
@@ -18,23 +19,24 @@ function generateResults(el){
   //API Call
   getWeather(baseURL, userZip, apiKey)
     .then (function(data){
-      //console.log(data)
-      postData('/addInfo', {temperature: data.main.temp, date: newDate, userResponse: userFeelings });
-
-      updateUI ();
-    })
-  };
+        //console.log(data)
+        postData('/addInfo', {temperature: data.main.temp, date: newDate, userFeelings: userFeelings})
+          .then(function(){
+              updateUI ();
+            })
+        });
+      }
 
 //function to make API call
   const getWeather = async (baseURL, userZip, apiKey)=>{
     const response = await fetch(baseURL+userZip+apiKey);
-    try {
-      const userEntry = await response.json();
-      return userEntry;
-    } catch (error) {
-      console.log("error",error);
-    }
-  }
+      try {
+        const userEntry = await response.json();
+        return userEntry;
+      } catch (error) {
+        console.log("error",error);
+        }
+      }
 
 //POST function
   const postData = async (url = '', data = {})=> {
@@ -44,7 +46,7 @@ function generateResults(el){
       method: 'POST',
       credentials: 'same-origin',
       headers:  {
-        //'Content-Type':'application/json'
+        'Content-Type':'application/json'
       },
       body: JSON.stringify(data),
     });
@@ -60,16 +62,18 @@ function generateResults(el){
 
 //Update UI
 const updateUI = async () => {
-  const request = await fetch ('/addInfo')
+  const request = await fetch ('http://localhost:3000/all');
   try {
-    const allData = await request.json()
-    console.log(allData);
-
+    const allData = await request.json();
+    console.log('Update UI', allData);
+    //document.getElementById('date').innerHTML = 'Date: '+ allData.newDate;
+    //document.getElementById('temp').innerHTML = 'Temperature: '+ allData.temperature;
+    //document.getElementById('content').innerHTML = 'Feelings: '+ allData.userFeelings;
     document.getElementById('date').innerHTML = allData[0].newDate;
-    document.getElementById('temp').innerHTML = allData[0].temperature
+    document.getElementById('temp').innerHTML = allData[0].temperature;
     document.getElementById('content').innerHTML = allData[0].userFeelings;
   }
   catch (error){
     console.log('error', error)
-  }
- }
+  };
+};
