@@ -45,5 +45,5 @@ app.post('/addInfo', addResponse);
       temperature: req.body.temperature,
       userFeelings: req.body.userFeelings
     };
-    projectData(newEntry);
+    Object.assign(projectData,newEntry);
   }
