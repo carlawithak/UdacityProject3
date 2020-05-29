@@ -19,7 +19,7 @@ function generateResults(el){
   //API Call
   getWeather(baseURL, userZip, apiKey)
     .then (function(data){
-        //console.log(data)
+        console.log(data)
         postData('/addInfo', {temperature: data.main.temp, date: newDate, userFeelings: userFeelings})
           .then(function(){
               updateUI ();
@@ -30,6 +30,7 @@ function generateResults(el){
 //function to make API call
   const getWeather = async (baseURL, userZip, apiKey)=>{
     const response = await fetch(baseURL+userZip+apiKey);
+
       try {
         const userEntry = await response.json();
         return userEntry;
@@ -40,9 +41,8 @@ function generateResults(el){
 
 //POST function
   const postData = async (url = '', data = {})=> {
-    console.log(data);
-
-    const response = await fetch('http://localhost:3000/addInfo', {
+    //console.log(data);
+    const response = await fetch('/addInfo', {
       method: 'POST',
       credentials: 'same-origin',
       headers:  {
@@ -62,16 +62,15 @@ function generateResults(el){
 
 //Update UI
 const updateUI = async () => {
-  const request = await fetch ('http://localhost:3000/all');
+  console.log('updateUi is running!');
+  const request = await fetch ('http://localhost:3000/addInfo');
   try {
     const allData = await request.json();
     console.log('Update UI', allData);
-    //document.getElementById('date').innerHTML = 'Date: '+ allData.newDate;
-    //document.getElementById('temp').innerHTML = 'Temperature: '+ allData.temperature;
-    //document.getElementById('content').innerHTML = 'Feelings: '+ allData.userFeelings;
-    document.getElementById('date').innerHTML = allData[0].newDate;
-    document.getElementById('temp').innerHTML = allData[0].temperature;
-    document.getElementById('content').innerHTML = allData[0].userFeelings;
+
+    document.getElementById('date').innerHTML = allData.date;
+    document.getElementById('temp').innerHTML = allData.temperature;
+    document.getElementById('content').innerHTML = allData.userFeelings;
   }
   catch (error){
     console.log('error', error)
