@@ -34,6 +34,8 @@ app.get('/all', getData);
 function getData(req, res){
   res.send(projectData);
   console.log(projectData);
+  console.log('app__get');
+
 }
 
 //POST
@@ -43,7 +45,8 @@ app.post('/addInfo', addResponse);
     let newEntry = {
       date:req.body.date,
       temperature: req.body.temperature,
-      userFeelings: req.body.userFeelings
+      userFeelings: req.body.userResponse
     };
+    console.log('app_post');
     Object.assign(projectData,newEntry);
   }
